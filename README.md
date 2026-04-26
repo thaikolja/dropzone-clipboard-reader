@@ -2,6 +2,10 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-groq-reader?style=flat-square)](https://github.com/thaikolja/dropzone-groq-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-groq-reader?style=flat-square)](https://github.com/thaikolja/dropzone-groq-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)](https://support.apple.com/macos)
 
+<img width="265" height="265" style="margin:auto;display:flex;" alt="Hintergrund von „logo“ entfernt" src="https://github.com/user-attachments/assets/fc7e3176-2e06-43a3-84ca-a3e369e2119b" />
+
+---
+
 **Dropzone Groq Reader** is a custom [Dropzone](https://aptonic.com) action that reads text aloud using [Groq's Orpheus TTS API](https://console.groq.com/docs/text-to-speech). Multiple languages are included and chosen automatically based on the text.
 
 ## Features
