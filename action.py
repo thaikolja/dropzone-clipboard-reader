@@ -1,24 +1,85 @@
 # Dropzone Action Info
-# Name:                 Groq Reader
-# Description:          Reads text aloud using Groq's Orpheus TTS API
+# Name:                 Clipboard AI Reader
+# Description:          Reads text aloud using Groq or OpenAI TTS API
 # Handles:              Files, Text
 # Creator:              Kolja Nolte
-# URL:                  https://github.com/thaikolja/dropzone-groq-reader
+# URL:                  https://github.com/thaikolja/dropzone-ai-clipboard-reader
 # Events:               Clicked, Dragged
 # KeyModifiers:         Command, Option, Control, Shift
-# SkipConfig:           No
+# SkipConfig:           Yes
 # RunsSandboxed:        Yes
 # Version:              1.0.0
 # MinDropzoneVersion:   4.0
-# OptionsNIB:           APIKey
 # PythonPath:           venv/bin/python3
 
 import os
 import subprocess
 
-from groq_tts import GroqTTS
+from openai_tts_engine import OpenAITTS
+from groq_tts_engine import GroqTTS
 
-VOICE = "troy"
+GROQ_VOICE = "troy"
+OPENAI_VOICE = "alloy"
+
+
+def _setup_config():
+    """Show Pashua dialog to configure API keys and provider."""
+    groq_key = os.environ.get('groq_api_key', '')
+    openai_key = os.environ.get('openai_api_key', '')
+    provider = os.environ.get('provider', 'Groq')
+
+    config = f"""
+    *.title = Clipboard AI Reader Configuration
+    i.type = text
+    i.text = This action can use either the Groq or OpenAI text-to-speech API. Please provide at lest one API key and select the provider you want to use.
+    i.width = 400
+    g.type = password
+    g.label = Groq API Key for TTS
+    g.default = {groq_key}
+    g.width = 400
+    o.type = password
+    o.label = OpenAI API Key for TTS
+    o.default = {openai_key}
+    o.width = 400
+    p.type = radiobutton
+    p.label = Select the provider you want to use for text-to-speech synthesis:
+    p.option = Groq
+    p.option = OpenAI
+    p.default = {provider}
+    cb.type = cancelbutton
+    db.type = defaultbutton
+    """
+    result = dz.pashua(config)
+
+    if result.get('cb') == '1':
+        return None
+
+    dz.save_value('groq_api_key', result['g'])
+    dz.save_value('openai_api_key', result['o'])
+    dz.save_value('provider', result['p'])
+
+    return result
+
+
+def _get_config():
+    """Retrieve configuration, prompting if necessary or if Command is held."""
+    # Check if Command key is held to force re-configuration
+    if os.environ.get('KEY_MODIFIERS') == 'Command':
+        return _setup_config()
+
+    groq_key = os.environ.get('groq_api_key')
+    openai_key = os.environ.get('openai_api_key')
+    provider = os.environ.get('provider')
+
+    # If configuration is missing, prompt for it
+    if not provider or (provider == 'Groq' and not groq_key) or (provider == 'OpenAI' and not openai_key):
+        return _setup_config()
+
+    return {
+        'g': groq_key,
+        'o': openai_key,
+        'p': provider
+    }
 
 
 def _text_for_path(path):
@@ -46,30 +107,37 @@ def _text_for_path(path):
     return os.path.basename(path)
 
 
-def _speak_text(text, api_key):
+def _speak_text(text, config):
     """Synthesise text to speech and play it with a determinate progress bar.
-
-    Sets up the Dropzone grid status, creates a ``GroqTTS`` instance with the
-    provided API key, and delegates to ``GroqTTS.speak()`` with a progress
-    callback that updates the Dropzone progress bar.
 
     Args:
         text: The text string to be spoken aloud.
-        api_key: A valid Groq API key for the TTS request.
+        config: Configuration dictionary with provider and API keys.
     """
     # Guard against empty or whitespace-only input
     if not text or not text.strip():
         dz.finish("No text provided")
         return
 
+    provider = config['p']
+    if provider == 'Groq':
+        api_key = config['g']
+        if not api_key:
+            dz.fail("Groq API key not configured")
+            return
+        tts = GroqTTS(api_key=api_key, voice=GROQ_VOICE)
+    else:
+        api_key = config['o']
+        if not api_key:
+            dz.fail("OpenAI API key not configured")
+            return
+        tts = OpenAITTS(api_key=api_key, voice=OPENAI_VOICE)
+
     # Show an initial status message in the Dropzone grid
-    dz.begin("Generating speech...")
+    dz.begin(f"Generating speech ({provider})...")
 
     # Enable the determinate progress bar so we can report playback progress
     dz.determinate(True)
-
-    # Create a TTS instance with the API key provided by the OptionsNIB
-    tts = GroqTTS(api_key=api_key, voice=VOICE)
 
     # Generate the audio and play it, updating the progress bar as playback advances
     tts.speak(text, progress_callback=lambda p: dz.percent(p))
@@ -80,69 +148,38 @@ def _speak_text(text, api_key):
 
 
 def dragged():
-    """Handle a drag-and-drop event from the Dropzone grid.
-
-    Triggered when the user drops files or text onto the action.  The dragged
-    type is read from the ``dragged_type`` environment variable set by
-    Dropzone.  Files are resolved via ``_text_for_path``, text strings are
-    joined and passed directly to ``_speak_text``.
-
-    Globals:
-        items: List of dragged file paths or text strings, provided by
-            Dropzone.
-    """
-    # Retrieve the Groq API key that was entered via the OptionsNIB panel
-    api_key = os.environ.get(key="api_key")
-
-    # Abort with a failure notification if no key was configured
-    if not api_key:
-        dz.fail("No API key configured")
+    """Handle a drag-and-drop event from the Dropzone grid."""
+    config = _get_config()
+    if not config:
+        dz.fail("Configuration required")
         return
 
     # Determine what was dropped: files or a text string
-    # Dropzone sets this environment variable automatically
     dragged_type = os.environ.get("dragged_type", "text")
 
     if dragged_type == "files":
-        # For each dropped file, convert it to text (content for .txt/.md, name otherwise)
-        # Join multiple files with a space so they are read in sequence
         text = " ".join(_text_for_path(p) for p in items)
     else:
-        # Text drops come in as a list of strings; join them into a single string
         text = " ".join(items) if isinstance(items, list) else str(items)
 
-    # Delegate to the shared speak helper
-    _speak_text(text, api_key)
+    _speak_text(text, config)
 
 
 def clicked():
-    """Handle a click event on the action in the Dropzone grid.
-
-    Reads the current clipboard contents via ``pbpaste`` (macOS built-in).
-    If the clipboard holds a file path, the path is resolved via
-    ``_text_for_path``.  Otherwise the raw clipboard text is spoken aloud.
-    """
-    # Retrieve the Groq API key that was entered via the OptionsNIB panel
-    api_key = os.environ.get("api_key")
-
-    # Abort with a failure notification if no key was configured
-    if not api_key:
-        dz.fail("No API key configured")
+    """Handle a click event on the action in the Dropzone grid."""
+    config = _get_config()
+    if not config:
+        dz.fail("Configuration required")
         return
 
-    # Fetch the current clipboard contents using pbpaste (macOS built-in)
+    # Fetch the current clipboard contents
     text = subprocess.check_output(["pbpaste"], text=True).strip()
 
-    # Abort early if the clipboard is empty
     if not text:
         dz.finish("Clipboard is empty")
         return
 
-    # If the clipboard contains a file path, resolve it via _text_for_path
-    # e.g. /Users/name/Documents/notes.txt → file content
-    # e.g. /Users/name/Photo.jpg           → "Photo.jpg"
     if os.path.isfile(text):
         text = _text_for_path(text)
 
-    # Delegate to the shared speak helper
-    _speak_text(text, api_key)
+    _speak_text(text, config)
