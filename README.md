@@ -1,8 +1,10 @@
 # Dropzone AI Reader
 
-[![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-ai-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-ai-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)](https://support.apple.com/macos)
+[![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-clipboard-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-clipboard-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)](https://support.apple.com/macos)
 
-<img width="265" height="265" style="margin:auto;display:flex;" alt="Hintergrund von „logo“ entfernt" src="https://github.com/user-attachments/assets/fc7e3176-2e06-43a3-84ca-a3e369e2119b" />
+<div style="text-align:center;">
+    <img width="265" height="265" style="margin:auto;display:flex;" alt="Hintergrund von „logo“ entfernt" src="https://github.com/user-attachments/assets/fc7e3176-2e06-43a3-84ca-a3e369e2119b" />
+</div>
 
 ---
 
@@ -31,13 +33,13 @@
 
 ## Usage
 
-| Action | Behaviour |
-|---|---|
-| Click | Reads the current clipboard |
-| Drop `.txt` / `.md` | Reads the file content |
-| Drop any other file | Reads the file name |
-| Drop text | Reads the text |
-| ⌘ + Click/Drop | Opens configuration dialog |
+| Action              | Behaviour                   |
+|---------------------|-----------------------------|
+| Click               | Reads the current clipboard |
+| Drop `.txt` / `.md` | Reads the file content      |
+| Drop any other file | Reads the file name         |
+| Drop text           | Reads the text              |
+| ⌘ + Click/Drop      | Opens configuration dialog  |
 
 ## Development
 
