@@ -62,7 +62,7 @@ class OpenAITTS:
         # Generate an audio stream from the input text using OpenAI's TTS API
         with self.client.audio.speech.with_streaming_response.create(
             extra_headers={
-                "HTTP-Referer": "https://github.com/thaikolja/dropzone-ai-reader",
+                "HTTP-Referer":       "https://github.com/thaikolja/dropzone-ai-reader",
                 "X-OpenRouter-Title": "Dropzone AI Reader",
             },
             model=self.model,
@@ -73,7 +73,7 @@ class OpenAITTS:
             # Write the binary MP3 data to a temporary file on disk
             with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
                 temp_path = f.name
-            
+
             # Persist the API response to the temp file
             response.stream_to_file(temp_path)
 
