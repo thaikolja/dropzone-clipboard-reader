@@ -41,10 +41,10 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/thaikolja/dropzone-ai-reader.git
+git clone https://github.com/thaikolja/dropzone-clipboard-reader.git
 
 # Navigate into the project directory
-cd dropzone-ai-reader
+cd dropzone-clipboard-reader
 
 # Set up a Python virtual environment
 python3 -m venv venv && source venv/bin/activate
