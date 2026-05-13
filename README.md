@@ -1,10 +1,6 @@
 # Dropzone AI Reader
 
-[![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-clipboard-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-clipboard-reader?style=flat-square)](https://github.com/thaikolja/dropzone-ai-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)](https://support.apple.com/macos)
-
-<div style="text-align:center;">
-    <img width="265" height="265" style="margin:auto;display:flex;" alt="Hintergrund von „logo“ entfernt" src="https://github.com/user-attachments/assets/fc7e3176-2e06-43a3-84ca-a3e369e2119b" />
-</div>
+[![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-clipboard-reader?style=flat)](https://github.com/thaikolja/dropzone-ai-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-clipboard-reader?style=flat)](https://github.com/thaikolja/dropzone-ai-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat)](https://support.apple.com/macos)
 
 ---
 
@@ -44,15 +40,22 @@
 ## Development
 
 ```bash
+# Clone the repository
 git clone https://github.com/thaikolja/dropzone-ai-reader.git
+
+# Navigate into the project directory
 cd dropzone-ai-reader
-python3 -m venv venv
-./venv/bin/pip install openai groq
+
+# Set up a Python virtual environment
+python3 -m venv venv && source venv/bin/activate
+
+# Install dependencies
+pip install openai groq
 ```
 
 ## Authors
 
-* Kolja Nolte (kolja.nolte@gmail.com)
+* **Kolja Nolte** (kolja.nolte@gmail.com)
 
 ## License
 
