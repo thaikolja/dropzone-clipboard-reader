@@ -1,19 +1,19 @@
-# Dropzone AI Reader
+# Dropzone Clipboard Reader
 
 [![GitHub Release](https://img.shields.io/github/v/release/thaikolja/dropzone-clipboard-reader?style=flat)](https://github.com/thaikolja/dropzone-ai-reader/releases) [![GitHub License](https://img.shields.io/github/license/thaikolja/dropzone-clipboard-reader?style=flat)](https://github.com/thaikolja/dropzone-ai-reader/blob/main/LICENSE) [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat)](https://support.apple.com/macos)
 
 ---
 
-**Dropzone AI Reader** is a custom [Dropzone](https://aptonic.com) action that reads text aloud using either Groq or OpenAI's TTS API.
+**Dropzone AI Reader** is a custom [Dropzone](https://aptonic.com) action that reads text aloud using either Groq Orpheus or xAI Grok Voice TTS.
 
 ## Features
 
-- **Click** → reads the current clipboard text aloud
-- **Drag text** → drops any text selection onto the action to hear it spoken
-- **Drag files** → reads `.txt` / `.md` file contents; speaks the filename for other types
-- **Progress bar** → shows real-time playback progress in the Dropzone grid
-- **Multi-provider support** → Choose between Groq and OpenAI
-- **Custom configuration** → Enter both API keys and switch providers easily
+- **Click** — reads the current clipboard text aloud
+- **Drag text** — drops any text selection onto the action to hear it spoken
+- **Drag files** — reads `.txt` / `.md` file contents; speaks the filename for other types
+- **Progress bar** — shows real-time playback progress in the Dropzone grid
+- **Multi-provider support** — Choose between Groq (Orpheus) and xAI (Grok Voice)
+- **Custom configuration** — Enter both API keys and switch providers easily
 
 ## Requirements
 
@@ -36,6 +36,13 @@
 | Drop any other file | Reads the file name         |
 | Drop text           | Reads the text              |
 | ⌘ + Click/Drop      | Opens configuration dialog  |
+
+## Providers & Models
+
+| Provider    | Model                              | Voice Default | Cost               |
+|-------------|------------------------------------|---------------|--------------------|
+| Groq        | `canopylabs/orpheus-v1-english`    | `troy`        | $22.00/M chars     |
+| xAI         | `x-ai/grok-voice-tts-1.0`        | `Eve`         | $15.00/M chars     |
 
 ## Development
 
