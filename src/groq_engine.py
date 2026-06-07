@@ -1,8 +1,9 @@
 import os
 import tempfile
-from groq import Groq, GroqError
+from groq import Groq
 
 from .audio_player import play_audio
+from action import GROQ_VOICE
 
 
 class GroqTTS:
@@ -12,13 +13,13 @@ class GroqTTS:
     the resulting audio via ``afplay`` with optional progress reporting.
     """
 
-    MAX_TEXT_LENGTH = 15000
+    MAX_TEXT_LENGTH = 200
 
     def __init__(
         self,
         api_key=None,
         model="canopylabs/orpheus-v1-english",
-        voice="troy",
+        voice=str(GROQ_VOICE),
     ):
         """Initialise the GroqTTS instance.
 
@@ -41,7 +42,7 @@ class GroqTTS:
                 percentage (0--99) during playback.
 
         Raises:
-            GroqError: If the API call fails.
+            Exception: If the API call or playback fails.
         """
         if len(text) > self.MAX_TEXT_LENGTH:
             text = text[: self.MAX_TEXT_LENGTH]
@@ -61,10 +62,9 @@ class GroqTTS:
             response.write_to_file(temp_path)
 
             play_audio(temp_path, progress_callback=progress_callback)
-        except GroqError:
-            if temp_path:
+        finally:
+            if temp_path and os.path.exists(temp_path):
                 try:
                     os.unlink(temp_path)
                 except OSError:
                     pass
-            raise

@@ -2,34 +2,22 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.0] — 2026-06-08
-
-### Changed
-
-- Replaced OpenAI/Kokoro provider with **xAI Grok Voice TTS** via OpenRouter
-- Renamed `OpenAITTS` → `OpenRouterTTS` class, file `src/openai_engine.py` → `src/openrouter_engine.py`
-- Default voice: `Eve` (one of 5 Grok voices: Eve, Ara, Rex, Sal, Leo)
-- Increased text limit from 4000 to **15000 characters** (Grok's max)
-- Config dialog: "OpenAI" option → "xAI"; label updated to "OpenRouter API Key (for xAI)"
-
-### Fixed
-
-- Backward compatibility: legacy "OpenAI" provider value still works
-
 ## [1.3.0] — 2026-06-08
 
 ### Changed
 
 - Restructured code into `src/` package with shared `audio_player.py` module
-- Switched OpenAI provider from direct API to OpenRouter with `hexgrad/kokoro-82m` model
-- Updated default voice to `af_bella` (Kokoro voice) for the OpenRouter provider
-- Renamed config dialog key label to "OpenRouter API Key"
+- Replaced OpenAI/HuggingFace providers with **xAI Grok Voice TTS** via OpenRouter
+- Renamed `OpenAITTS` → `OpenRouterTTS`, file `src/openai_engine.py` → `src/openrouter_engine.py`
+- Default voice: `Rex` for OpenRouter (xAI Grok Voice), `troy` for Groq (Orpheus)
+- Config dialog: "OpenAI" option → "xAI", key label → "OpenRouter API Key"
+- Config dialog: password fields no longer pre-fill with stored keys (prevents line-break corruption)
 
 ### Added
 
-- Error handling around API calls in both TTS engines
+- Error handling around API calls in both TTS engines with temp file cleanup on failure
 - Graceful handling of file read errors, clipboard failures, and playback errors
-- Text length limiting (4000 chars) to prevent API failures on large inputs
+- Text length limiting: 200 chars for Groq Orpheus, 15000 for xAI Grok Voice
 - Temporary file cleanup guarantee via try/finally in audio player
 
 ### Fixed
@@ -37,6 +25,7 @@ All notable changes to this project will be documented in this file. The format 
 - Config dialog typo ("at lest" → "at least")
 - OpenRouter HTTP header (`X-Title` replaces `X-OpenRouter-Title`)
 - File reading with `errors="replace"` to handle non-UTF-8 content
+- Backward compatibility: legacy "OpenAI" provider value still works
 
 ## [1.2.0] — 2026-05-07
 

@@ -42,7 +42,7 @@
 | Provider    | Model                              | Voice Default | Cost               |
 |-------------|------------------------------------|---------------|--------------------|
 | Groq        | `canopylabs/orpheus-v1-english`    | `troy`        | $22.00/M chars     |
-| xAI         | `x-ai/grok-voice-tts-1.0`        | `Eve`         | $15.00/M chars     |
+| xAI         | `x-ai/grok-voice-tts-1.0`        | `Rex`         | $15.00/M chars     |
 
 ## Development
 

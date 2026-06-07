@@ -8,7 +8,7 @@
 # KeyModifiers:         Command, Option, Control, Shift
 # SkipConfig:           Yes
 # RunsSandboxed:        Yes
-# Version:              1.4.0
+# Version:              1.3.0
 # MinDropzoneVersion:   4.0
 # PythonPath:           venv/bin/python3
 
@@ -18,8 +18,8 @@ import subprocess
 from src.groq_engine import GroqTTS
 from src.openrouter_engine import OpenRouterTTS
 
-GROQ_VOICE = "troy" # Groq's TTS voice for general use (limited)
-OPENROUTER_VOICE = "Rex" # xAI's TTS voice available via OpenRouter
+GROQ_VOICE = "troy"
+OPENROUTER_VOICE = "Rex"
 
 
 def _setup_config():
@@ -30,19 +30,26 @@ def _setup_config():
     # Map legacy "OpenAI" provider to "xAI" for backward compat
     display_provider = "xAI" if provider in ("OpenAI", "xAI") else provider
 
+    groq_status = "Groq API key is configured" if groq_key else "Groq API key is NOT configured"
+    openrouter_status = "OpenRouter API key is configured" if openrouter_key else "OpenRouter API key is NOT configured"
+
     config = f"""
     *.title = Clipboard AI Reader Configuration
     i.type = text
     i.text = This action can use either the Groq Orpheus or xAI Grok Voice text-to-speech API. Please provide at least one API key and select the provider you want to use.
-    i.width = 400
+    i.width = 600
+    g.status.type = text
+    g.status.text = {groq_status}
+    g.status.width = 600
     g.type = password
-    g.label = Groq API Key for TTS
-    g.default = {groq_key}
-    g.width = 400
+    g.label = Groq API Key (leave blank to keep existing)
+    g.width = 600
+    o.status.type = text
+    o.status.text = {openrouter_status}
+    o.status.width = 600
     o.type = password
-    o.label = OpenRouter API Key (for xAI)
-    o.default = {openrouter_key}
-    o.width = 400
+    o.label = OpenRouter API Key (leave blank to keep existing)
+    o.width = 600
     p.type = radiobutton
     p.label = Select the provider you want to use for text-to-speech synthesis:
     p.option = Groq
@@ -56,8 +63,15 @@ def _setup_config():
     if result.get("cb") == "1":
         return None
 
-    dz.save_value("groq_api_key", result["g"])
-    dz.save_value("openai_api_key", result["o"])
+    # Only overwrite stored keys if the user entered a new value
+    new_groq_key = result["g"]
+    new_openrouter_key = result["o"]
+
+    if new_groq_key:
+        dz.save_value("groq_api_key", new_groq_key)
+    if new_openrouter_key:
+        dz.save_value("openai_api_key", new_openrouter_key)
+
     dz.save_value("provider", result["p"])
 
     return result
