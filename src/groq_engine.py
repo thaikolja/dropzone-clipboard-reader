@@ -1,9 +1,8 @@
 import os
 import tempfile
-from groq import Groq
 
+from groq import Groq
 from .audio_player import play_audio
-from action import GROQ_VOICE
 
 
 class GroqTTS:
@@ -19,7 +18,7 @@ class GroqTTS:
         self,
         api_key=None,
         model="canopylabs/orpheus-v1-english",
-        voice=str(GROQ_VOICE),
+        voice='troy',
     ):
         """Initialise the GroqTTS instance.
 
